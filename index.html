@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سيكونس كارتيثيا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Amiri:wght=400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #1a1613; /* Dark brown/charcoal inspired by background */
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated starfield background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fdf8e6; /* Creamy white for stars */
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Nebula effect */
+        .nebula {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: 
+                radial-gradient(ellipse at 15% 25%, rgba(242, 231, 195, 0.2) 0%, transparent 50%), /* Light gold glow */
+                radial-gradient(ellipse at 85% 75%, rgba(168, 123, 90, 0.2) 0%, transparent 50%), /* Bronze/brown glow */
+                radial-gradient(ellipse at 50% 50%, rgba(124, 200, 200, 0.15) 0%, transparent 60%); /* Hint of cool blue/turquoise */
+            animation: nebulaShift 20s ease-in-out infinite;
+        }
+
+        @keyframes nebulaShift {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
+        }
+
+        /* Energy particles - Instantiated via JS */
+        .energy-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #f2e7c3, #a87b5a); /* Gold to bronze */
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(242, 231, 195, 0.8);
+            animation: energyFloat 8s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes energyFloat {
+            0% {
+                transform: translateY(0) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                /* Float upwards and fade out */
+                transform: translateY(-120vh) translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Top decoration */
+        .top-decoration {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .constellation-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .constellation-icon::before {
+            content: '★';
+            position: absolute;
+            font-size: 80px;
+            color: #f2e7c3; /* Light gold star */
+            text-shadow: 
+                0 0 20px rgba(242, 231, 195, 0.8),
+                0 0 40px rgba(242, 231, 195, 0.6),
+                0 0 60px rgba(242, 231, 195, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.1); filter: brightness(1.5); }
+        }
+
+        .main-title {
+            font-size: 72px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #f2e7c3 20%, #d4a373 40%, #a87b5a 60%, #7a523e 80%, #f2e7c3 100%); /* Gold, bronze, brown gradient */
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 30px rgba(242, 231, 195, 0.8));
+            animation: gradientSlide 5s ease infinite, titleFloat 6s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes gradientSlide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.02); }
+        }
+
+        .subtitle {
+            font-size: 22px;
+            color: rgba(242, 231, 195, 0.8); /* Faded gold */
+            font-weight: 700;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(242, 231, 195, 0.5);
+            margin-bottom: 40px;
+        }
+
+        /* Divider line */
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f2e7c3, #a87b5a, #f2e7c3, transparent); /* Gold/bronze divider */
+            margin: 40px 0;
+            box-shadow: 0 0 20px rgba(242, 231, 195, 0.6);
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '◆';
+            position: absolute;
+            top: -8px;
+            color: #f2e7c3; /* Light gold diamond */
+            font-size: 18px;
+            text-shadow: 0 0 20px rgba(242, 231, 195, 0.8);
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 550px 1fr;
+            gap: 80px;
+            align-items: start;
+            background: linear-gradient(135deg, rgba(26, 22, 19, 0.6) 0%, rgba(42, 37, 34, 0.6) 100%); /* Darker brown gradient for grid */
+            padding: 60px;
+            border-radius: 40px;
+            border: 2px solid rgba(242, 231, 195, 0.3); /* Soft gold border */
+            box-shadow: 
+                0 0 100px rgba(242, 231, 195, 0.3),
+                inset 0 0 100px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-grid::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(242, 231, 195, 0.03) 2px, rgba(242, 231, 195, 0.03) 4px); /* Faded gold grid lines */
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .image-section {
+            position: sticky;
+            top: 20px;
+            z-index: 2;
+        }
+
+        .image-container {
+            position: relative;
+            filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.7));
+        }
+
+        /* Hexagonal frame effect */
+        .hex-frame {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: conic-gradient(from 0deg at 50% 50%, 
+                #f2e7c3 0deg, /* Light gold */
+                #d4a373 60deg, /* Medium gold */
+                #7cc8c8 120deg, /* Cool blue */
+                #f2e7c3 180deg,
+                #d4a373 240deg,
+                #7cc8c8 300deg,
+                #f2e7c3 360deg);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            animation: hexRotate 10s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes hexRotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .image-box {
+            width: 100%;
+            height: 650px;
+            border-radius: 30px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0a15 0%, #1a1a30 100%); /* Original dark gradient, can be adjusted */
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.8),
+                inset 0 0 80px rgba(242, 231, 195, 0.2), /* Soft gold inner glow */
+                0 0 40px rgba(242, 231, 195, 0.4); /* Soft gold outer glow */
+            position: relative;
+            border: 4px solid rgba(242, 231, 195, 0.5); /* Soft gold border */
+            clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+        }
+
+        .image-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(242, 231, 195, 0.1) 50%, transparent 70%); /* Soft gold shine */
+            animation: shine 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            100% { transform: translateX(100%) translateY(100%); }
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.8s ease;
+            filter: brightness(0.95) contrast(1.1);
+        }
+
+        .image-box:hover img {
+            transform: scale(1.08);
+            filter: brightness(1.05) contrast(1.15);
+        }
+
+        .character-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.95) 0%, 
+                rgba(0, 0, 0, 0.8) 40%,
+                transparent 100%);
+            padding: 40px;
+            z-index: 1;
+        }
+
+        .character-name {
+            color: white;
+            font-size: 42px;
+            font-weight: 900;
+            text-align: center;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ffffff, #f2e7c3, #d4a373, #f2e7c3, #ffffff); /* Gold gradient for name */
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientSlide 3s ease infinite;
+            filter: drop-shadow(0 0 20px rgba(242, 231, 195, 0.8)); /* Soft gold shadow */
+        }
+
+        .character-rank {
+            text-align: center;
+            color: rgba(242, 231, 195, 0.9); /* Faded gold rank */
+            font-size: 16px;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        .points-section {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .point-item {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            background: linear-gradient(135deg, 
+                rgba(242, 231, 195, 0.12) 0%, /* Very subtle light gold */
+                rgba(168, 123, 90, 0.12) 50%, /* Very subtle bronze */
+                rgba(242, 231, 195, 0.12) 100%);
+            padding: 35px;
+            border-radius: 25px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(242, 231, 195, 0.3); /* Soft gold border */
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animated border */
+        .point-item::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(242, 231, 195, 0.5), /* Light gold */
+                rgba(168, 123, 90, 0.5), /* Bronze */
+                transparent);
+            border-radius: 25px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: -1;
+        }
+
+        .point-item:hover::before {
+            opacity: 1;
+            animation: borderFlow 2s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .point-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(242, 231, 195, 0.15), transparent); /* Soft gold shimmer */
+            transform: translateY(-50%) translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .point-item:hover::after {
+            transform: translateY(-50%) translateX(100%);
+        }
+
+        .point-item:hover {
+            transform: translateX(-15px) scale(1.03);
+            box-shadow: 
+                0 20px 50px rgba(242, 231, 195, 0.4), /* Soft gold glow on hover */
+                inset 0 0 50px rgba(242, 231, 195, 0.08);
+            border-color: rgba(242, 231, 195, 0.7); /* Stronger gold border on hover */
+        }
+
+        .point-number-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        /* Orbital rings */
+        .orbital-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid rgba(242, 231, 195, 0.3); /* Soft gold rings */
+            border-radius: 50%;
+            animation: orbit 4s linear infinite;
+        }
+
+        .orbital-ring:nth-child(1) {
+            width: 90px;
+            height: 90px;
+            animation-duration: 3s;
+        }
+
+        .orbital-ring:nth-child(2) {
+            width: 105px;
+            height: 105px;
+            animation-duration: 4s;
+            animation-direction: reverse;
+        }
+
+        @keyframes orbit {
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .point-number {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d4a373 0%, #a87b5a 50%, #5c3d2e 100%); /* Gold to dark brown gradient for number */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 32px;
+            flex-shrink: 0;
+            box-shadow: 
+                0 10px 30px rgba(242, 231, 195, 0.6), /* Soft gold shadow */
+                inset 0 -4px 15px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(242, 231, 195, 0.4);
+            position: relative;
+            z-index: 3;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .point-item:hover .point-number {
+            transform: scale(1.15) rotate(360deg);
+            box-shadow: 
+                0 15px 40px rgba(242, 231, 195, 0.8),
+                inset 0 -4px 15px rgba(0, 0, 0, 0.4),
+                0 0 60px rgba(242, 231, 195, 0.6);
+        }
+
+        .point-number::before {
+            content: 'S'; /* Sequence indicator */
+            position: absolute;
+            font-size: 15px;
+            top: 3px;
+            right: 3px;
+            font-weight: 800;
+            background: rgba(0, 0, 0, 0.4);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .point-text {
+            flex: 1;
+            font-size: 19px;
+            line-height: 2.1;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 500;
+            text-align: right;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .point-text strong {
+            color: #f2e7c3; /* Light gold for strong text */
+            font-weight: 800;
+            text-shadow: 0 0 15px rgba(242, 231, 195, 0.6);
+            display: inline-block;
+            padding: 0 2px;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(212, 163, 115, 0.4), rgba(168, 123, 90, 0.4)); /* Bronze/gold badge */
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 800;
+            border: 2px solid rgba(212, 163, 115, 0.6); /* Bronze border */
+            margin: 0 4px;
+            box-shadow: 
+                0 4px 15px rgba(212, 163, 115, 0.4),
+                inset 0 1px 3px rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(242, 231, 195, 0.8); /* Soft gold text shadow */
+            transition: all 0.3s;
+        }
+
+        .stat-badge:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(212, 163, 115, 0.6);
+        }
+
+        /* Animation entrance */
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .point-item {
+            animation: slideInRight 0.8s ease backwards;
+        }
+
+        .point-item:nth-child(1) { animation-delay: 0.1s; }
+        .point-item:nth-child(2) { animation-delay: 0.2s; }
+        .point-item:nth-child(3) { animation-delay: 0.3s; }
+        .point-item:nth-child(4) { animation-delay: 0.4s; }
+        .point-item:nth-child(5) { animation-delay: 0.5s; }
+        .point-item:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Footer Styles for Copyright */
+        .footer {
+            max-width: 1600px;
+            margin: 60px auto 20px;
+            text-align: center;
+            border-top: 1px solid rgba(242, 231, 195, 0.1); /* Subtle separating line */
+            padding-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .copyright-text {
+            font-size: 14px;
+            color: rgba(242, 231, 195, 0.6); /* Faded light gold text */
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .telegram-link {
+            color: #7cc8c8; /* Cool blue/turquoise for link, standing out */
+            text-decoration: none;
+            font-weight: 700;
+            margin-right: 5px;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .telegram-link:hover {
+            color: #f2e7c3; /* Bright gold on hover */
+            text-shadow: 0 0 10px #f2e7c3;
+        }
+
+        @media (max-width: 1400px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .image-section {
+                position: relative;
+                top: 0;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 42px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+                letter-spacing: 4px;
+            }
+
+            .content-grid {
+                padding: 40px 25px;
+            }
+
+            .point-item {
+                padding: 25px 20px;
+                gap: 20px;
+            }
+
+            .point-text {
+                font-size: 17px;
+                line-height: 1.8;
+            }
+
+            .point-number {
+                width: 60px;
+                height: 60px;
+                font-size: 26px;
+            }
+
+            .orbital-ring:nth-child(1) { width: 75px; height: 75px; }
+            .orbital-ring:nth-child(2) { width: 90px; height: 90px; }
+
+            .image-box {
+                height: 500px;
+            }
+
+            .character-name {
+                font-size: 32px;
+            }
+
+            .footer {
+                margin: 40px auto 10px;
+            }
+            .copyright-text {
+                font-size: 12px;
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Starfield and Nebula Background -->
+    <div class="stars" id="stars"></div>
+    <div class="nebula"></div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <div class="top-decoration">
+            <div class="constellation-icon"></div>
+            <h1 class="main-title">سيكونس كارتيثيا</h1>
+            <p class="subtitle">· Cartethyia Sequences ·</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Image Section -->
+            <div class="image-section">
+                <div class="image-container">
+                    <div class="hex-frame"></div>
+                    <div class="image-box">
+                        <!-- Image URL -->
+                        <img src="https://static.zerochan.net/Cartethyia.1024.4518660.webp" alt="Cartethyia" onerror="this.src='https://placehold.co/550x650/1a1613/f2e7c3?text=Image+Not+Found'">
+                        <div class="character-overlay">
+                            <div class="character-name">CARTETHYIA</div>
+                            <div class="character-rank">★ ★ ★ ★ ★ ★</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sequences Section (Updated Content) -->
+            <div class="points-section">
+                <!-- Sequence 1 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">1</div>
+                    </div>
+                    <div class="point-text">
+                        تدخل كارتيثيا حالة <strong>"zeal"</strong> لمدة <span class="stat-badge">10 ثوان</span>. تحت تأثير هذه الحالة، تنتقل ستاكات الايروجن عند موت الوحش إلى أقرب وحش له، وهذه المهارة تمتلك كولداون مقداره <span class="stat-badge">1 ثانية</span>. الكريت دمج الخاص بفلوردليس يزداد بنسبة <span class="stat-badge">25%</span> لكل <span class="stat-badge">30 نقطة كونفيكشن</span>، يتراكم هذا التأثير أربع مرات وتزال هذه الستاكات بعد استخدام الليبريشن.
+                    </div>
+                </div>
+
+                <!-- Sequence 2 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">2</div>
+                    </div>
+                    <div class="point-text">
+                        استخدام <strong>الليبريشن الأول</strong> يقوم بزيادة حد ستاكات الايروجن بمقدار <span class="stat-badge">3</span>. الهجوم التالي الذي يحدث دمج يقوم بوضع <span class="stat-badge">3 ستاكات ايرو ايروجن</span> على كل الأعداء في مدى معين ويقوم بتطبيق ضرره عليهم بدون استهلاك الستاكات. دمج ملتيبلير <strong>البيسك - الهيفي - الدودج كاونتر والانترو سكل</strong> يزداد بمقدار <span class="stat-badge">50%</span>، ودمج الضربات الهوائية يزيد بمقدار <span class="stat-badge">200%</span>. وبعد ضربة الميد اير، كل نوع من سيوفها يقوم بتقليل كولدوان السكل بمقدار <span class="stat-badge">ثانية</span>.
+                    </div>
+                </div>
+
+                <!-- Sequence 3 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">3</div>
+                    </div>
+                    <div class="point-text">
+                        <strong>البيسك اتاك الخامس</strong> و<strong>الميد اير الثاني</strong> و<strong>الهيفي اتاك</strong> الخاصين و<strong>السكل</strong> الخاصة بفلوردليس تضع الآن <span class="stat-badge">2</span> من ستاكات الايروجن على الأعداء. دمج ملتيبلير مهارة الريزونانس سكل <strong>"blade of howling squall"</strong> يزداد بمقدار <span class="stat-badge">100%</span>.
+                    </div>
+                </div>
+
+                <!-- Sequence 4 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">4</div>
+                    </div>
+                    <div class="point-text">
+                        عندما يقوم الريزوناتور في الفريق بإحداث أي نوع من <strong>الديبفات (التأثيرات السلبية)</strong>، جميع الريزوناتور في التيم يحصلون على <span class="stat-badge">20% دمج بونص</span> لكل العناصر لمدة <span class="stat-badge">20 ثانية</span>.
+                    </div>
+                </div>
+
+                <!-- Sequence 5 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">5</div>
+                    </div>
+                    <div class="point-text">
+                        عندما تتلقى <strong>كارتيثيا</strong> أو <strong>فلوردليس</strong> ضربة قاضية فإنهم <strong>لا يسقطون</strong> بل يحصلون على <strong>درع</strong> يساوي <span class="stat-badge">20%</span> من الاتش بي الخاص بها لمدة <span class="stat-badge">10 ثوان</span>. يمكن استعمال هذا التأثير مرة كل <span class="stat-badge">10 دقائق</span>، ومقدار الاتش بي الذي يتم استهلاكه عند تفعيل مهارة الليبريشن ينخفض بمقدار <span class="stat-badge">25%</span> من مجموع الاتش بي.
+                    </div>
+                </div>
+
+                <!-- Sequence 6 -->
+                <div class="point-item">
+                    <div class="point-number-container">
+                        <div class="orbital-ring"></div>
+                        <div class="orbital-ring"></div>
+                        <div class="point-number">6</div>
+                    </div>
+                    <div class="point-text">
+                        بعد استخدام <strong>مهارة الليبريشن الثانية</strong>، يرتفع مقدار ستاكات الايروجن إلى <strong>الحد الأقصى</strong>، واستخدام هذه المهارة لا يعود يزيح ستاكات الايروجن من الأعداء. في غضون <span class="stat-badge">30 ثانية</span> من استعمال مهارة السكل أو الانترو سكل أو الليبريشن الأول أو الليبريشن الثاني، عندما يقوم ريزوناتور في الفريق بوضع ستاكات الأيرو ايروجن على الأعداء التي عليها الحد الأقصى من الستاكات، يصاب هؤلاء الأعداء بضرر أيرو ايروجن مرة واحدة مباشرة. والأعداء يأخذون <span class="stat-badge">40% دمج زيادة</span> من قبل فلوردليس.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer for Copyright -->
+    <div class="footer">
+        <p class="copyright-text">
+            التصميم والمحتوى برعاية فريق WuWaArab عبر تيليغرام.
+            <a href="https://t.me/WuWaArab" target="_blank" class="telegram-link">t.me/WuWaArab</a>
+        </p>
+    </div>
+
+    <script>
+        // JavaScript to generate dynamic starfield and energy particles
+        document.addEventListener('DOMContentLoaded', () => {
+            const starContainer = document.getElementById('stars');
+            const numStars = 100;
+            const numParticles = 15;
+
+            // Function to safely create and append elements
+            const createAndAppend = (className, container, styles = {}) => {
+                const element = document.createElement('div');
+                element.className = className;
+                Object.keys(styles).forEach(key => {
+                    element.style[key] = styles[key];
+                });
+                container.appendChild(element);
+                return element;
+            };
+
+            // Create Stars
+            for (let i = 0; i < numStars; i++) {
+                const size = Math.random() * 3 + 1; // 1px to 4px
+                createAndAppend('star', starContainer, {
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    top: `${Math.random() * 100}vh`,
+                    left: `${Math.random() * 100}vw`,
+                    animationDelay: `${Math.random() * 3}s`
+                });
+            }
+
+            // Create Energy Particles
+            for (let i = 0; i < numParticles; i++) {
+                const size = Math.random() * 5 + 3; // 3px to 8px
+                createAndAppend('energy-particle', document.body, {
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    left: `${Math.random() * 100}vw`,
+                    animationDuration: `${Math.random() * 5 + 8}s`, // 8s to 13s
+                    animationDelay: `${Math.random() * 5}s`
+                });
+            }
+        });
+    </script>
+</body>
+</html>
