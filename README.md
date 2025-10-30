@@ -1,6 +1,6 @@
-# Cartethyia Constellation Banner
+# Cartethyia-Sequences
 
-A visually stunning **interactive banner** showcasing the *Cartethyia* constellation with animated backgrounds, floating stars, energy particles, and detailed points description for the character. Designed to be fully **responsive** and suitable for both desktop and mobile.
+A visually stunning **Cartethyia-Sequences** showcasing the *Cartethyia* Sequences with animated backgrounds, floating stars, energy particles, and detailed points description for the character. Designed to be fully **responsive** and suitable for both desktop and mobile.
 
 ---
 
