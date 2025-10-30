@@ -33,7 +33,7 @@ Simply open the `index.html` file in a browser or host it using **GitHub Pages**
 ## Live Demo
 
 Once hosted on GitHub Pages, your banner will be accessible via:  
-https://your-username.github.io/Cartethyia-Sequences//
+https://arilyaze.github.io/Cartethyia-Sequences//
 
 
 ---
